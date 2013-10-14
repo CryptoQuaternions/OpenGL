@@ -41,8 +41,8 @@ void Terrain::GenerateTerrain(int a_TerrainSize, float a_TileWidth, float a_Tile
 			m_Vertices[y * a_TerrainSize + x].Color.r = 1.0f;
 			m_Vertices[y * a_TerrainSize + x].Color.g = 1.0f;
 			m_Vertices[y * a_TerrainSize + x].Color.b = 1.0f;
-			m_Vertices[y * a_TerrainSize + x].UV.x = ((float)x) / 32.0f;
-			m_Vertices[y * a_TerrainSize + x].UV.y = ((float)y) / 32.0f;
+			m_Vertices[y * a_TerrainSize + x].UV.x = ((float)x) / 8.0f;
+			m_Vertices[y * a_TerrainSize + x].UV.y = ((float)y) / 8.0f;
 		}											   
 	}
 

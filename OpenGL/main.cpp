@@ -39,16 +39,16 @@ int main()
 	vertexDeclaration->AddVertexAttribute(new VertexAttribute("uv", 2, GL_FLOAT, GL_FALSE, 11 * sizeof( float ), (void*)(9 * sizeof(float))));
 
 	Terrain * terrain = new Terrain();
-	terrain->GenerateTerrain(128, 32.0f, 32.0f, "riemer.png");
+	terrain->GenerateTerrain(128, 32.0f, 32.0f, "Textures\\riemer.png");
 	terrain->Build();
 
 	Texture2D * tex = new Texture2D();
-	tex->Load("grass.png");
+	tex->Load("Textures\\grass.png");
 	tex->Bind();
 
 	ShaderProgram * program = new ShaderProgram();
-	program->AddShader(new Shader("frag.shader", GL_FRAGMENT_SHADER));
-	program->AddShader(new Shader("vert.shader", GL_VERTEX_SHADER));
+	program->AddShader(new Shader("Shaders\\TerrainFragment.shader", GL_FRAGMENT_SHADER));
+	program->AddShader(new Shader("Shaders\\TerrainVertex.shader", GL_VERTEX_SHADER));
 	program->BindFragDataLocation(0, "outColor");
 	program->Link();
 	program->SetVertexDeclaration(vertexDeclaration);
@@ -60,7 +60,7 @@ int main()
 	program->Bind();
 	double start_time = glfwGetTime();
 
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 	while( glfwGetWindowParam( GLFW_OPENED ) && game_running)
 	{
