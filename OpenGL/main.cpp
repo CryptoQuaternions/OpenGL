@@ -29,22 +29,21 @@ int main()
 	
 	//Create window
 	glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE, GL_TRUE );
-	glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW );
+	glfwOpenWindow( 800, 600, 0, 0, 0, 0, 1, 1, GLFW_WINDOW );
 	glfwSetWindowTitle( "S A O" );
-	glEnable(GL_DEPTH_TEST);
 	//Glew crap
 	glewExperimental = GL_TRUE;
 	glewInit();
+
+	Terrain * terrain = new Terrain();
+	terrain->GenerateTerrain(128, 8.0f, 8.0f, "Textures\\riemer.png");
+	terrain->Build();
 
 	VertexDeclaration * vertexDeclaration = new VertexDeclaration();
 	vertexDeclaration->AddVertexAttribute(new VertexAttribute("position", 3, GL_FLOAT, GL_FALSE, 11 * sizeof( float ), 0));
 	vertexDeclaration->AddVertexAttribute(new VertexAttribute("normal", 3, GL_FLOAT, GL_FALSE, 11 * sizeof( float ), (void*)(3 * sizeof(float))));
 	vertexDeclaration->AddVertexAttribute(new VertexAttribute("color", 3, GL_FLOAT, GL_FALSE, 11 * sizeof( float ), (void*)(6 * sizeof(float))));
 	vertexDeclaration->AddVertexAttribute(new VertexAttribute("uv", 2, GL_FLOAT, GL_FALSE, 11 * sizeof( float ), (void*)(9 * sizeof(float))));
-
-	Terrain * terrain = new Terrain();
-	terrain->GenerateTerrain(128, 8.0f, 8.0f, "Textures\\riemer.png");
-	terrain->Build();
 
 	ShaderProgram * program = new ShaderProgram();
 	program->AddShader(new Shader("Shaders\\TerrainFragment.shader", GL_FRAGMENT_SHADER));
@@ -58,10 +57,14 @@ int main()
 	tex->Bind();
 
 	camera = new Camera();
-	camera->SetupCamera(45, 800.0 / 600.0, 0.1, 1000);
+	camera->SetupCamera(45, 800.0 / 600.0, 10.0, 1000);
 	camera->Position = glm::vec3(50, 50, 250);
 
 	program->Bind();
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 
 	double start_time = glfwGetTime();
 	
@@ -72,14 +75,16 @@ int main()
 		start_time = new_time;
 
 		glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		glClearDepth(1.0f);
+		glClear( GL_COLOR_BUFFER_BIT );
+		glClear( GL_DEPTH_BUFFER_BIT );
 
 		camera->Update();
 		camera->Draw(terrain, program);
 
 		glfwSwapBuffers();
 		
-		Input(elapsed_time);	
+		Input(elapsed_time);
 	}
 	
 	program->Unbind();
@@ -96,8 +101,8 @@ int main()
 	int mouse_x, mouse_y;
 	glfwGetMousePos(&mouse_x, &mouse_y);
 
-	camera->Rotation.y -= (mouse_x - 400) * a_Time * camera_rot;
-	camera->Rotation.x -= (mouse_y - 300) * a_Time * camera_rot;
+	camera->Rotation.y -= (mouse_x - 400) * (float)a_Time * camera_rot;
+	camera->Rotation.x -= (mouse_y - 300) * (float)a_Time * camera_rot;
 
 	glfwSetMousePos(400, 300);
 
@@ -106,7 +111,7 @@ int main()
 		camera->Position += camera->GetForward() * camera_speed * (float)a_Time;
 	if ( glfwGetKey( 0x53 ) == GLFW_PRESS )
 		camera->Position -= camera->GetForward() * camera_speed * (float)a_Time;
-		if ( glfwGetKey( 0x41 ) == GLFW_PRESS )
+	if ( glfwGetKey( 0x41 ) == GLFW_PRESS )
 		camera->Position -= camera->GetLeft() * camera_speed * (float)a_Time;
 	if ( glfwGetKey( 0x44 ) == GLFW_PRESS )
 		camera->Position += camera->GetLeft() * camera_speed * (float)a_Time;

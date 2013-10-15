@@ -1,7 +1,5 @@
 #include "Camera.h"
 
-#define PI 3.141592653589793
-
 Camera::Camera(void)
 {
 	Rotation = glm::vec3(0.0f, 0.0f, 0.0f);

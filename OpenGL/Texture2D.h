@@ -15,6 +15,7 @@ public:
 	void BindAs(GLenum a_TextureID);
 	void SetTextureParam(GLenum a_Target, GLenum a_Param, GLenum a_Value);
 	Texture2D(void);
+	Texture2D(const char * a_FilePath);
 	~Texture2D(void);
 };
 
