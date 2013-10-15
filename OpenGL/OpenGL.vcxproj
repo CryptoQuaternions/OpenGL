@@ -103,8 +103,8 @@
     <ClInclude Include="VertexDeclaration.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.shader" />
-    <None Include="vert.shader" />
+    <None Include="Shaders\TerrainFragment.shader" />
+    <None Include="Shaders\TerrainVertex.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

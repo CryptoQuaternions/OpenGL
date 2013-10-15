@@ -13,22 +13,26 @@
 Camera * camera;
 
 bool game_running = true;
-int camera_speed = 50;
+float camera_speed = 200.0f;
+float camera_rot = 50.0f;
 
-void keyboardInput(double a_Time);
+void Input(double a_Time);
 
 int main()
 {
 	glfwInit();
+
 	//Crashes laptop for absolutely no reason at all.
 	//glfwOpenWindowHint( GLFW_OPENGL_VERSION_MAJOR, 3 );
 	//glfwOpenWindowHint( GLFW_OPENGL_VERSION_MINOR, 2 );
 	//glfwOpenWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+	
+	//Create window
 	glfwOpenWindowHint( GLFW_WINDOW_NO_RESIZE, GL_TRUE );
 	glfwOpenWindow( 800, 600, 0, 0, 0, 0, 0, 0, GLFW_WINDOW );
 	glfwSetWindowTitle( "S A O" );
 	glEnable(GL_DEPTH_TEST);
-
+	//Glew crap
 	glewExperimental = GL_TRUE;
 	glewInit();
 
@@ -39,12 +43,8 @@ int main()
 	vertexDeclaration->AddVertexAttribute(new VertexAttribute("uv", 2, GL_FLOAT, GL_FALSE, 11 * sizeof( float ), (void*)(9 * sizeof(float))));
 
 	Terrain * terrain = new Terrain();
-	terrain->GenerateTerrain(128, 32.0f, 32.0f, "Textures\\riemer.png");
+	terrain->GenerateTerrain(128, 8.0f, 8.0f, "Textures\\riemer.png");
 	terrain->Build();
-
-	Texture2D * tex = new Texture2D();
-	tex->Load("Textures\\grass.png");
-	tex->Bind();
 
 	ShaderProgram * program = new ShaderProgram();
 	program->AddShader(new Shader("Shaders\\TerrainFragment.shader", GL_FRAGMENT_SHADER));
@@ -53,15 +53,18 @@ int main()
 	program->Link();
 	program->SetVertexDeclaration(vertexDeclaration);
 
+	Texture2D * tex = new Texture2D();
+	tex->Load("Textures\\grass.png");
+	tex->Bind();
+
 	camera = new Camera();
 	camera->SetupCamera(45, 800.0 / 600.0, 0.1, 1000);
-	camera->Position = glm::vec3(0, 0, 250);
+	camera->Position = glm::vec3(50, 50, 250);
 
 	program->Bind();
+
 	double start_time = glfwGetTime();
-
-	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-
+	
 	while( glfwGetWindowParam( GLFW_OPENED ) && game_running)
 	{
 		double new_time = glfwGetTime();
@@ -72,13 +75,11 @@ int main()
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 		camera->Update();
-
 		camera->Draw(terrain, program);
 
 		glfwSwapBuffers();
 		
-		keyboardInput(elapsed_time);
-		
+		Input(elapsed_time);	
 	}
 	
 	program->Unbind();
@@ -86,23 +87,27 @@ int main()
 	glfwTerminate();
 	return 1;
 }
-
- void keyboardInput(double a_Time)
+;
+ void Input(double a_Time)
  {
 	if ( glfwGetKey( GLFW_KEY_ESC ) == GLFW_PRESS )
 		game_running = false;
 
+	int mouse_x, mouse_y;
+	glfwGetMousePos(&mouse_x, &mouse_y);
+
+	camera->Rotation.y -= (mouse_x - 400) * a_Time * camera_rot;
+	camera->Rotation.x -= (mouse_y - 300) * a_Time * camera_rot;
+
+	glfwSetMousePos(400, 300);
+
 	//Camera movement
-	if ( glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS )
-		camera->Position.x -= camera_speed * a_Time;
-	if ( glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS )
-		camera->Position.x += camera_speed * a_Time;
-	if ( glfwGetKey( GLFW_KEY_UP ) == GLFW_PRESS )
-		camera->Position.y += camera_speed * a_Time;
-	if ( glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS )
-		camera->Position.y -= camera_speed * a_Time;
-	if( glfwGetKey( GLFW_KEY_SPACE ) == GLFW_PRESS )
-		camera->Position.z += camera_speed * a_Time;
-	if( glfwGetKey( GLFW_KEY_LCTRL ) == GLFW_PRESS )
-		camera->Position.z -= camera_speed * a_Time;
+	if ( glfwGetKey( 0x57 ) == GLFW_PRESS )
+		camera->Position += camera->GetForward() * camera_speed * (float)a_Time;
+	if ( glfwGetKey( 0x53 ) == GLFW_PRESS )
+		camera->Position -= camera->GetForward() * camera_speed * (float)a_Time;
+		if ( glfwGetKey( 0x41 ) == GLFW_PRESS )
+		camera->Position -= camera->GetLeft() * camera_speed * (float)a_Time;
+	if ( glfwGetKey( 0x44 ) == GLFW_PRESS )
+		camera->Position += camera->GetLeft() * camera_speed * (float)a_Time;
  }

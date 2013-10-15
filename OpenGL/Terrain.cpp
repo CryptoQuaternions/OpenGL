@@ -37,12 +37,12 @@ void Terrain::GenerateTerrain(int a_TerrainSize, float a_TileWidth, float a_Tile
 			float heigth = img_data[(y * img_width + x) * 3];
 			m_Vertices[y * a_TerrainSize + x].Position.x = x * a_TileWidth;
 			m_Vertices[y * a_TerrainSize + x].Position.y = y * a_TileHeight;
-			m_Vertices[y * a_TerrainSize + x].Position.z = heigth * 2;
+			m_Vertices[y * a_TerrainSize + x].Position.z = heigth / 2.0;
 			m_Vertices[y * a_TerrainSize + x].Color.r = 1.0f;
 			m_Vertices[y * a_TerrainSize + x].Color.g = 1.0f;
 			m_Vertices[y * a_TerrainSize + x].Color.b = 1.0f;
-			m_Vertices[y * a_TerrainSize + x].UV.x = ((float)x) / 8.0f;
-			m_Vertices[y * a_TerrainSize + x].UV.y = ((float)y) / 8.0f;
+			m_Vertices[y * a_TerrainSize + x].UV.x = ((float)x) / 16.0f;
+			m_Vertices[y * a_TerrainSize + x].UV.y = ((float)y) / 16.0f;
 		}											   
 	}
 

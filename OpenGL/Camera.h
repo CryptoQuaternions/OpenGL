@@ -18,6 +18,8 @@ public:
 	void Update();
 	void Draw(Mesh * a_Renderable, ShaderProgram * a_Shaderprogram);
 	void SetupCamera(double a_FOV, double a_AspectRatio, double a_NearPlane, double a_FarPlane);
+	glm::vec3 GetForward();
+	glm::vec3 GetLeft();
 	Camera(void);
 	~Camera(void);
 };

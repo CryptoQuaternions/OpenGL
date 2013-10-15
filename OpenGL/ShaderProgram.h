@@ -5,6 +5,7 @@
 #include <vector>
 #include "Shader.h"
 #include "VertexDeclaration.h"
+
 class ShaderProgram
 {
 	std::vector<Shader*> m_Shaders;
